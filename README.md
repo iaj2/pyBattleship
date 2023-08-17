@@ -6,5 +6,5 @@ Battleship Game using pygame library!
 ## How to download
 - (Coming Soon)
 <br>
-<img src=https://github.com/iaj2/pyBattleship/assets/108596576/d482915d-d6a3-4c20-a0c5-c2d1701e3034 style="height: 500px">
+<img src=https://github.com/iaj2/pyBattleship/assets/108596576/e6da1f67-0b7b-4079-92b1-2095e75803a3 style="height: 500px">
 <br>
