@@ -6,8 +6,8 @@ Battleship Game using pygame library!
 ## How to download
 - (Coming Soon)
 - For the time being, feel free to follow the steps below to set it up manually:
-  1. clone this repo
-  2. Setup virtual environment
+1. clone this repo
+2. Setup virtual environment
 ```
 python -m venv venv
 ```
