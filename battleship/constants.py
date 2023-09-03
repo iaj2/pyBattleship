@@ -39,3 +39,19 @@ class GameState(Enum):
     SETUP = 1
     MAIN_GAME = 2
     END = 3
+
+@unique
+class Tile(Enum):
+    MISS = 0
+    OPEN = 1
+    HIT = 2
+
+@unique
+class BoardType(Enum):
+    Player = 1
+    CPU = 2
+
+@unique 
+class GameTurn(Enum):
+    Player = 1
+    CPU = 2

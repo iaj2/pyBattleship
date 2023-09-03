@@ -3,7 +3,7 @@ from battleship.board import Board
 from battleship.constants import (
     BLUE_DARKER, SETUP_GAME_START_IMG,
     WIDTH,HEIGHT, RESTART_IMG, YOU_WIN_IMG, YOU_LOSE_IMG,
-    GameState
+    BoardType, GameTurn, GameState
 )
 from battleship.player import Player
 from battleship.CPU import CPU
@@ -17,12 +17,12 @@ class Game():
 
     # Initialize new game
     def _init(self):
-        self.CPU_board = Board(1)
-        self.player_board = Board(2)
+        self.CPU_board = Board(BoardType.CPU)
+        self.player_board = Board(BoardType.Player)
         self.CPU = CPU(self.CPU_board,self.player_board)
         self.player = Player(self.player_board,self.CPU_board)
         self.game_state = GameState.SETUP
-        self.turn = 'player'
+        self.turn = GameTurn.Player
         self.winner = None
 
     # Initialize UI (buttons and such)
@@ -64,7 +64,7 @@ class Game():
             # Display winner
             winner_banner_x = 0
             winner_banner_y = 20
-            if self.winner == 'player':
+            if self.winner == GameTurn.Player:
                 self.win.blit(YOU_WIN_IMG, (winner_banner_x,winner_banner_y))
             else:
                 self.win.blit(YOU_LOSE_IMG, (winner_banner_x,winner_banner_y))
@@ -80,26 +80,26 @@ class Game():
 
 
     def _main_game(self):
-        if self.turn == 'player':
+        if self.turn == GameTurn.Player:
             if self.player.turn():
                 self._change_turn()
             # Check for win
             if self._check_win(self.CPU):
-               self.winner = 'player'
+               self.winner = GameTurn.Player
                self.game_state = GameState.END
         else:
             if self.CPU.turn():
                 self._change_turn()
             # Check for win
             if self._check_win(self.player):
-               self.winner = 'CPU'
+               self.winner = GameTurn.CPU
                self.game_state = GameState.END
 
     def _change_turn(self):
-        if self.turn == 'player':
-            self.turn = 'CPU'
+        if self.turn == GameTurn.Player:
+            self.turn = GameTurn.CPU
         else:
-            self.turn = 'player'
+            self.turn = GameTurn.Player
 
     def _check_win(self,opponent):
         # Check for win
@@ -115,4 +115,3 @@ class Game():
             self._init()
             # Change game state to setup
             self.game_state = GameState.SETUP
-    

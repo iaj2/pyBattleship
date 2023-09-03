@@ -19,7 +19,7 @@ def main():
             if event.type == p.QUIT:
                 run = False
       
-            game.state_manager()
+        game.state_manager()
         
 
     p.quit()

@@ -1,17 +1,20 @@
 import pygame as p
-from battleship.constants import CELL_SIZE,SHIP_EK,SHIP_FN,SIDE_PADDING,MIDDLE_PADDING,TOP_PADDING,BOARDHEIGHT, ROWS,COLS
+from battleship.constants import (
+CELL_SIZE,SHIP_EK,SHIP_FN,SIDE_PADDING,MIDDLE_PADDING,TOP_PADDING,
+BOARDHEIGHT, ROWS,COLS, BoardType
+)
 
 class Ship():
-    def __init__(self, size, col, row, player):
+    def __init__(self, size, col, row, board_type):
         self.size = size
         self.col, self.row = col,row
         self.x, self.y = 0,0
         self.indexes = [(0,0) for _ in range(size)]
-        self.player = player
+        self.board_type = board_type
         self.orientation = "v"    
         self.hits = 0
         self.sunk = False
-        if player == 1:
+        if board_type == BoardType.CPU:
             self.display = False
         else:
             self.display = True
@@ -21,13 +24,13 @@ class Ship():
 
     def calc_pos(self):
         self.x = SIDE_PADDING + self.col*CELL_SIZE
-        if self.player == 1:
+        if self.board_type == BoardType.CPU:
             self.y = TOP_PADDING + self.row*CELL_SIZE
         else:
             self.y = TOP_PADDING+BOARDHEIGHT+MIDDLE_PADDING + self.row*CELL_SIZE
 
     def _get_ship_type(self):
-        if self.player == 1:
+        if self.board_type == BoardType.CPU:
             ship = p.transform.scale(SHIP_FN, (CELL_SIZE,CELL_SIZE*self.size))
         else:
             ship = p.transform.scale(SHIP_EK, (CELL_SIZE,CELL_SIZE*self.size))

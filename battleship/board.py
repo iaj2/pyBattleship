@@ -1,22 +1,22 @@
 import pygame as p
 from battleship.constants import (
 SIDE_PADDING,TOP_PADDING,MIDDLE_PADDING,BOARDHEIGHT,ROWS,COLS,SHIP_SIZES,
-BLUE_LIGHT,CELL_IMAGE,CELL_SIZE,GREEN,RED)
+BLUE_LIGHT,CELL_IMAGE,CELL_SIZE,GREEN,RED, BoardType, Tile)
 from battleship.ship import Ship
 
 class Board():
-    def __init__(self, player):
+    def __init__(self, board_type):
         self.board = []
         self.ships = []
-        self.player = player
+        self.board_type = board_type
         self.x, self.y = self.get_position()
         self._create()
 
     def get_position(self):
         x = SIDE_PADDING
-        if self.player == 1:
+        if self.board_type == BoardType.CPU:
             y = TOP_PADDING
-        else:
+        elif self.board_type == BoardType.Player:
             y = TOP_PADDING+BOARDHEIGHT+MIDDLE_PADDING
         return x,y
 
@@ -25,14 +25,14 @@ class Board():
         for row in range(ROWS):
             self.board.append([])
             for col in range(COLS):
-                self.board[row].append(0)
+                self.board[row].append(Tile.OPEN)
 
 
         # Add ships to board
         row = 0
         col = 0
         for size in SHIP_SIZES:
-            self.ships.append(Ship(size,col,row,self.player))     
+            self.ships.append(Ship(size,col,row,self.board_type))     
             col += 1
 
         for ship in self.ships:
@@ -60,13 +60,15 @@ class Board():
         hit = p.Surface((CELL_SIZE,CELL_SIZE))
         hit.set_alpha(128)
         hit.fill(RED)
+
         for row in range(ROWS):
             for col in range(COLS):
                 # Draw miss
-                if self.board[row][col] == -1:                
+                if self.board[row][col] == Tile.MISS:     
                     win.blit(miss,(self.x+CELL_SIZE*col,self.y+CELL_SIZE*row))
+                    
                 # Draw hit
-                elif self.board[row][col] == 1:
+                elif self.board[row][col] == Tile.HIT:
                     win.blit(hit,(self.x+CELL_SIZE*col,self.y+CELL_SIZE*row))
 
 
@@ -75,7 +77,7 @@ class Board():
         print("**************************")
         for row in range(ROWS):
             for col in range(COLS):
-                if self.board[row][col] != 0:
+                if self.board[row][col] != Tile.OPEN:
                     print("X ",end="")
                 else:
                     print("0 ",end="")
@@ -89,26 +91,26 @@ class Board():
         if ship.orientation == "v":
             if ship.col + ship.size <= COLS:
                 for i in range(1,ship.size):
-                    if self.board[ship.row][ship.col+i] != 0:
+                    if self.board[ship.row][ship.col+i] != Tile.OPEN:
                         success = False
                 if success:
                     for i in range(ship.size):
                         self.board[ship.row][ship.col+i] = ship
                     for i in range(1,ship.size):
-                        self.board[ship.row+i][ship.col] = 0
+                        self.board[ship.row+i][ship.col] = Tile.OPEN
                     ship.orientation = "h"
                     ship.calc_indexes()
         # Rotate horizontal to vertical
         else:
             if ship.row + ship.size <= ROWS:
                 for i in range(1,ship.size):
-                    if self.board[ship.row+i][ship.col] != 0:
+                    if self.board[ship.row+i][ship.col] != Tile.OPEN:
                         success = False
                 if success:
                     for i in range(ship.size):
                         self.board[ship.row+i][ship.col] = ship
                     for i in range(1,ship.size):
-                        self.board[ship.row][ship.col+i] = 0
+                        self.board[ship.row][ship.col+i] = Tile.OPEN
                     ship.orientation = "v"
                     ship.calc_indexes()
 
@@ -133,7 +135,7 @@ class Board():
         ship.calc_indexes()
         # Check valid placement
         for row,col in ship.indexes:
-            if self.board[row][col] != ship and self.board[row][col] != 0:
+            if self.board[row][col] != ship and self.board[row][col] != Tile.OPEN:
                 success = False
                 break
         # Reset location if invalid placement
@@ -144,7 +146,7 @@ class Board():
             ship.calc_pos()
         # Erase old location
         for row,col in prev_indexes:
-            self.board[row][col] = 0
+            self.board[row][col] = Tile.OPEN
         # Fill new location
         for row,col in ship.indexes:
             self.board[row][col] = ship
@@ -155,17 +157,18 @@ class Board():
         success = False
         hit_ship = False
         # Miss
-        if self.board[row][col] == 0:
-            self.board[row][col] = -1
+        if self.board[row][col] == Tile.OPEN:
+            self.board[row][col] = Tile.MISS
             success = True
         # Hit
-        elif self.board[row][col] != -1 and self.board[row][col] != 1:
+        elif self.board[row][col] != Tile.MISS and self.board[row][col] != Tile.HIT:
             ship = self.board[row][col]
             ship.hit()
-            self.board[row][col] = 1
+            self.board[row][col] = Tile.HIT
             success = True
             hit_ship = True
         # Return if the shot was valid (hit a spot not already hit)
+        #print(success,hit_ship)      
         return success,hit_ship
 
             
