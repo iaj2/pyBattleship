@@ -22,6 +22,7 @@ class Game():
         self.CPU = CPU(self.CPU_board,self.player_board)
         self.player = Player(self.player_board,self.CPU_board)
         self.game_state = GameState.SETUP
+        self.game_just_started = False
         self.turn = GameTurn.Player
         self.winner = None
 
@@ -80,6 +81,11 @@ class Game():
 
 
     def _main_game(self):
+        if not self.game_just_started:
+            self.CPU.set_opponent_ships_list()
+            self.CPU.set_fixed_opponent_board()
+            self.game_just_started = True
+
         if self.turn == GameTurn.Player:
             if self.player.turn():
                 self._change_turn()

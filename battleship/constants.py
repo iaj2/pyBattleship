@@ -32,6 +32,14 @@ BLUE_DARKER = "#30C3FE"
 BLUE_LIGHT = "#58C5F4"
 GREEN = "#41FF63"
 
+# SHOT MAP CODES
+@unique
+class ShotMapCode(Enum):
+    EMPTY_SPACE = 0
+    SHIP = 1
+    MISS = 2
+    HIT = 3
+
 # GAME STATES
 @unique
 class GameState(Enum):

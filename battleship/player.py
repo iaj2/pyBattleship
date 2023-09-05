@@ -60,7 +60,7 @@ class Player():
         # Hit opponents board
         if self._mouse_in_range(row,col):
             if p.mouse.get_pressed()[0] and not self.clicked_mouse:
-                valid_shot,_ = self.opponent_board.hit_ship(row,col)
+                valid_shot,_,_ = self.opponent_board.hit_ship(row,col)
                 if valid_shot:
                     self.clicked_mouse = True
             if self.clicked_mouse and not p.mouse.get_pressed()[0]:

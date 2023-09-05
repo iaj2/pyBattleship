@@ -36,6 +36,9 @@ class Ship():
             ship = p.transform.scale(SHIP_EK, (CELL_SIZE,CELL_SIZE*self.size))
         return ship
     
+    def is_sunk(self):
+        return self.sunk
+    
     def calc_indexes(self):
         if self.orientation == "v":
             for i in range(self.size):

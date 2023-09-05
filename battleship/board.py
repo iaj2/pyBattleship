@@ -19,6 +19,7 @@ class Board():
         elif self.board_type == BoardType.Player:
             y = TOP_PADDING+BOARDHEIGHT+MIDDLE_PADDING
         return x,y
+    
 
     def _create(self):
         # Create board
@@ -26,7 +27,6 @@ class Board():
             self.board.append([])
             for col in range(COLS):
                 self.board[row].append(Tile.OPEN)
-
 
         # Add ships to board
         row = 0
@@ -154,6 +154,7 @@ class Board():
         return success
                
     def hit_ship(self,row,col):
+        tile = self.board[row][col]
         success = False
         hit_ship = False
         # Miss
@@ -167,10 +168,11 @@ class Board():
             self.board[row][col] = Tile.HIT
             success = True
             hit_ship = True
-        # Return if the shot was valid (hit a spot not already hit)
-        #print(success,hit_ship)      
-        return success,hit_ship
+        # Return if the shot was valid (hit a spot not already hit)    
+        return success,hit_ship,tile
 
+    def get_ships_list(self):
+        return self.ships
             
 
  
