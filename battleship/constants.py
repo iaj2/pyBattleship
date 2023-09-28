@@ -22,6 +22,9 @@ SETUP_GAME_START_IMG = p.image.load("Assets\start_in_game.png")
 RESTART_IMG = p.image.load("Assets\\restart.png")
 YOU_WIN_IMG = p.image.load("Assets\you_win.png")
 YOU_LOSE_IMG = p.image.load("Assets\you_lose.png")
+EASY_BUTTON_IMG = p.transform.scale(p.image.load("Assets\easy_button.png"), (100,60))
+MED_BUTTON_IMG = p.transform.scale(p.image.load("Assets\medium_button.png"), (100,60))
+HARD_BUTTON_IMG = p.transform.scale(p.image.load("Assets\hard_button.png"), (100,60))
 
 
 # COLORS
@@ -39,6 +42,12 @@ class ShotMapCode(Enum):
     SHIP = 1
     MISS = 2
     HIT = 3
+
+@unique
+class AILevel(Enum):
+    EASY = 0
+    MEDIUM = 1
+    HARD = 2
 
 # GAME STATES
 @unique

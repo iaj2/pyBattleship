@@ -1,47 +1,18 @@
 import pygame as p
 import numpy as np
-import matplotlib.pyplot as plt
+from battleship.AI.AI import AI
 from battleship.constants import ROWS,COLS, SHIP_SIZES, Tile, ShotMapCode
 from battleship.ship import Ship
 import random
 import time
 
 
-class CPU():
+class AI_HARD(AI):
     def __init__(self,board,opponent_board):
-        self.board = board
-        self.opponent_board = opponent_board
-        self.opponent_board_fixed = []
-        self.opponent_shot_map = np.zeros((6, 10))
+        super().__init__(board, opponent_board)
         self.prob_map = None
-        self.opponent_ships = None
         self.adj_hit_probs_map = {}
         self.ship_tiles_hit = 0
-        self.setup_board()
-
-
-    def setup_board(self):
-        # Setup Ships in random places on board 
-        for ship in self.board.ships:
-            placed = False
-            # Randomly rotate
-            rotate = random.choice([True,False])
-            while not placed:
-                # Keep trying to move and place ship
-                row = random.randint(0,ROWS-1)
-                col = random.randint(0,COLS-1)
-                ship.move(row,col)
-                if self.board.place_ship(ship):
-                    # Keep trying to rotate ship
-                    if not rotate:
-                        placed = True
-                    if self.board.rotate_ship(ship):
-                        placed = True
-    def set_fixed_opponent_board(self):
-        for row in range(ROWS):
-            self.opponent_board_fixed.append([])
-            for col in range(COLS):
-                self.opponent_board_fixed[row].append(self.opponent_board.board[row][col])
 
     def set_opponent_ships_list(self):
         """
@@ -126,10 +97,8 @@ class CPU():
             return
 
         for _, adj_pos_list in self.adj_hit_probs_map.items():
-            print(adj_pos_list)
             for position in adj_pos_list:
                 row,col = position
-                print(row,col)
                 if self.opponent_shot_map[row, col] == ShotMapCode.EMPTY_SPACE.value:
                     prob_map[row,col] += 50
 
@@ -154,9 +123,7 @@ class CPU():
         self._remove_hit_probabilites(prob_map)
         self.add_adj_hit_probs(prob_map)
         self._add_orientaion_probability(prob_map)
-        
-        print(prob_map)
-        print('\n\n')
+
         self.prob_map = prob_map
         
 
@@ -169,7 +136,6 @@ class CPU():
         # Shoot the ship
         _, ship_got_hit, ship =  self.opponent_board.hit_ship(max_row,max_col)
         
-        print(max_row, max_col, ship_got_hit)
         if ship_got_hit:
             self.opponent_shot_map[max_row, max_col] = ShotMapCode.HIT.value
             self.ship_tiles_hit += 1

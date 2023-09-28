@@ -49,7 +49,6 @@ class Player():
             # Place the ship on the board
             if not p.mouse.get_pressed()[0]:
                 self.board.place_ship(self.selected_ship)
-                self.board.print()
                 self.selected_ship = None
                 self.drag_ship = False
 

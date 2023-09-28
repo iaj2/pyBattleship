@@ -19,7 +19,6 @@ class Board():
         elif self.board_type == BoardType.Player:
             y = TOP_PADDING+BOARDHEIGHT+MIDDLE_PADDING
         return x,y
-    
 
     def _create(self):
         # Create board

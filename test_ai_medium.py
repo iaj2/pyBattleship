@@ -6,7 +6,7 @@ CPU. In other words, the AI's board is on the bottom and the player's board is o
 """
 
 from battleship.board import Board
-from battleship.CPU import CPU
+from battleship.AI.AI_MEDIUM import AI_MEDIUM
 import pygame as p
 from battleship.constants import WIDTH,HEIGHT,BLUE_DARKER, GameState, BoardType, ROWS, COLS
 from battleship.game import Game
@@ -23,13 +23,11 @@ def init_test(game):
         game.game_state = GameState.MAIN_GAME   # Set to main game
         game.CPU_board = Board(BoardType.Player)
         game.player_board = Board(BoardType.CPU)
-        game.CPU = CPU(game.CPU_board, game.player_board)
-        game.player = CPU(game.player_board,game.CPU_board)
+        game.CPU = AI_MEDIUM(game.CPU_board, game.player_board)
+        game.player = AI_MEDIUM(game.player_board,game.CPU_board)
         for ship in game.player_board.ships:
             ship.display = True
-        game.CPU.set_opponent_ships_list()
         game.CPU.set_fixed_opponent_board()
-                
 
 def main():
     run = True
@@ -55,10 +53,9 @@ def main():
 
         if i < 100:
             if game.CPU.ship_tiles_hit < 17:
-                game.CPU.generate_prob_map()
-                game.CPU.shoot_ship()
+                game.CPU.turn()
                 shots_taken+=1
-                #time.sleep(1)
+                #time.sleep(0.5)
             else:
                 init_test(game)
                 total_shots_taken += shots_taken

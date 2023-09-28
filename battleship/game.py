@@ -2,11 +2,13 @@ import pygame as p
 from battleship.board import Board
 from battleship.constants import (
     BLUE_DARKER, SETUP_GAME_START_IMG,
-    WIDTH,HEIGHT, RESTART_IMG, YOU_WIN_IMG, YOU_LOSE_IMG,
-    BoardType, GameTurn, GameState
+    WIDTH,HEIGHT, RESTART_IMG, YOU_WIN_IMG, YOU_LOSE_IMG, EASY_BUTTON_IMG,
+    MED_BUTTON_IMG, HARD_BUTTON_IMG, BoardType, GameTurn, GameState, AILevel
 )
 from battleship.player import Player
-from battleship.CPU import CPU
+from battleship.AI.AI_EASY import AI_EASY
+from battleship.AI.AI_MEDIUM import AI_MEDIUM
+from battleship.AI.AI_HARD import AI_HARD
 from battleship.button import Button
 
 class Game():
@@ -19,15 +21,30 @@ class Game():
     def _init(self):
         self.CPU_board = Board(BoardType.CPU)
         self.player_board = Board(BoardType.Player)
-        self.CPU = CPU(self.CPU_board,self.player_board)
+        self.CPU = None
+        self.CPU_level = None
         self.player = Player(self.player_board,self.CPU_board)
-        self.game_state = GameState.SETUP
+        self.game_state = GameState.MAIN_MENU
         self.game_just_started = False
         self.turn = GameTurn.Player
         self.winner = None
 
     # Initialize UI (buttons and such)
     def _init_UI(self):
+        # Create easy, medium and hard level buttons
+        main_menu_button_y = 330
+        easy_level_button_x = (WIDTH//4 - EASY_BUTTON_IMG.get_width()//2)
+        easy_level_button_y = (main_menu_button_y - EASY_BUTTON_IMG.get_height()//2)
+        self.easy_level_button = Button(EASY_BUTTON_IMG, easy_level_button_x, easy_level_button_y)
+
+        med_level_button_x = ((WIDTH//4)*2 - MED_BUTTON_IMG.get_width()//2)
+        med_level_button_y = (main_menu_button_y - MED_BUTTON_IMG.get_height()//2)
+        self.med_level_button = Button(MED_BUTTON_IMG, med_level_button_x, med_level_button_y)
+
+        hard_level_button_x = ((WIDTH//4)*3 - HARD_BUTTON_IMG.get_width()//2)
+        hard_level_button_y = (main_menu_button_y - HARD_BUTTON_IMG.get_height()//2)
+        self.hard_level_button = Button(HARD_BUTTON_IMG, hard_level_button_x, hard_level_button_y)
+
         # Create the in-game start button in between the middle of the screen
         setup_game_start_button_x = (WIDTH - SETUP_GAME_START_IMG.get_width())//2
         setup_game_start_button_y = (HEIGHT - SETUP_GAME_START_IMG.get_height())//2
@@ -41,8 +58,7 @@ class Game():
 
     def state_manager(self):
         if self.game_state == GameState.MAIN_MENU:
-            # TODO: Implement Main Menu
-            pass
+            self._main_menu()
         elif self.game_state == GameState.SETUP:
             self._setup_game()
         elif self.game_state == GameState.MAIN_GAME:
@@ -52,6 +68,10 @@ class Game():
 
     def update_display(self):
         self.win.fill(BLUE_DARKER)
+        if self.game_state == GameState.MAIN_MENU:
+            self.easy_level_button.draw(self.win)
+            self.med_level_button.draw(self.win)
+            self.hard_level_button.draw(self.win)
         if self.game_state == GameState.SETUP or self.game_state == GameState.MAIN_GAME:
             # Draw boards
             self.CPU_board.draw(self.win)
@@ -71,21 +91,35 @@ class Game():
                 self.win.blit(YOU_LOSE_IMG, (winner_banner_x,winner_banner_y))
 
         p.display.update()
-        
+
+    def _main_menu(self):
+        # Detect start button to start game
+        if self.easy_level_button.is_clicked():
+            self.CPU = AI_EASY(self.CPU_board, self.player_board)
+            self.game_state = GameState.SETUP
+            self.CPU_level = AILevel.EASY
+        elif self.med_level_button.is_clicked():
+            self.CPU = AI_MEDIUM(self.CPU_board, self.player_board)
+            self.game_state = GameState.SETUP
+            self.CPU_level = AILevel.MEDIUM
+        elif self.hard_level_button.is_clicked():
+            self.CPU = AI_HARD(self.CPU_board, self.player_board)
+            self.game_state = GameState.SETUP
+            self.CPU_level = AILevel.HARD
+    
+     
     def _setup_game(self):
         # Setup Player Board
         self.player.setup_board()
         # Detect start button to start game
         if self.setup_game_start_button.is_clicked():
             self.game_state = GameState.MAIN_GAME
+            if self.CPU_level == AILevel.HARD:
+                self.CPU.set_opponent_ships_list()
+                self.CPU.set_fixed_opponent_board()                
 
 
     def _main_game(self):
-        if not self.game_just_started:
-            self.CPU.set_opponent_ships_list()
-            self.CPU.set_fixed_opponent_board()
-            self.game_just_started = True
-
         if self.turn == GameTurn.Player:
             if self.player.turn():
                 self._change_turn()
@@ -120,4 +154,4 @@ class Game():
             # Init a new game
             self._init()
             # Change game state to setup
-            self.game_state = GameState.SETUP
+            self.game_state = GameState.MAIN_MENU

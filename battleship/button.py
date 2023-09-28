@@ -20,7 +20,7 @@ class Button():
 
         # Check mouse over and clicked conditions   
         if self.rect.collidepoint(pos):
-            p.mouse.set_cursor(p.SYSTEM_CURSOR_HAND)
+            #p.mouse.set_cursor(p.SYSTEM_CURSOR_HAND)
             if p.mouse.get_pressed()[0] and not self.clicked:
                 self.clicked = True
                 action = True
