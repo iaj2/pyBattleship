@@ -19,6 +19,9 @@ class AI_EASY(AI):
         self.all_spots.remove(random_spot)
 
         random_row, random_col = random_spot
-        self.opponent_board.hit_ship(random_row, random_col)
+        _,ship_got_hit,_ = self.opponent_board.hit_ship(random_row, random_col)
+
+        if ship_got_hit:
+            self.ship_tiles_hit += 1
 
         return True

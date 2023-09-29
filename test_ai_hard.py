@@ -58,7 +58,7 @@ def main():
                 game.CPU.generate_prob_map()
                 game.CPU.shoot_ship()
                 shots_taken+=1
-                time.sleep(1)
+                # time.sleep(1)
             else:
                 init_test(game)
                 total_shots_taken += shots_taken

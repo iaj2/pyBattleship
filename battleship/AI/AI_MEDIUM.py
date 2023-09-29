@@ -60,7 +60,7 @@ class AI_MEDIUM(AI):
 
     def turn(self):
         print(self.all_spots)
-        if not self.adj_spots_map:
+        if not self.adj_spots:
             self._hunt()
         else:
             self._target()
