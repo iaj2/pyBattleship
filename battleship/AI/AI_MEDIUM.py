@@ -2,7 +2,6 @@ import pygame as p
 import random
 from battleship.AI.AI import AI
 from battleship.constants import ROWS, COLS
-from battleship.ship import Ship
 
 
 class AI_MEDIUM(AI):
@@ -35,8 +34,6 @@ class AI_MEDIUM(AI):
 
         self.all_spots.remove(pos)
 
-
-
         if ship_got_hit:
             # Remove the other adjascent spots
             while self.adj_spots:
@@ -59,7 +56,6 @@ class AI_MEDIUM(AI):
             self._append_adj_spots(random_row, random_col)
 
     def turn(self):
-        print(self.all_spots)
         if not self.adj_spots:
             self._hunt()
         else:
