@@ -3,6 +3,11 @@ Battleship Game using pygame library!
 - Drag, rotate and place ship smoothly
 - Smart CPU opponent
 - Restart and keep playing!
+
+## Video Demo
+
+https://github.com/iaj2/pyBattleship/assets/108596576/d9038f91-28ef-4ad6-81b8-b47e55ff5cfc
+
 ## How to download
 - (Coming Soon)
 - For the time being, feel free to follow the steps below to set it up manually:
